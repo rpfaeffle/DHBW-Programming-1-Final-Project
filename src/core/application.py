@@ -68,6 +68,7 @@ class Application(object):
 
         # Calculate the frame rate
         self.current_frame += 1
+        self.cx.frame = self.current_frame
 
         if frame % 60 == 0:
             current_time = time.time()

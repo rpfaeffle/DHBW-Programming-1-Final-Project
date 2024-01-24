@@ -3,6 +3,7 @@ from OpenGL.GL import *
 from core.application import Application
 from core.component import Component, Render
 from core.openGLUtils import OpenGLUtils
+from itertools import chain
 import random
 
 # Constants
@@ -31,7 +32,7 @@ SHAPES = {
 KEYS = list(SHAPES.keys())
 
 def flatten(list):
-    return [item for sublist in list for item in sublist if item is not None]
+  return chain.from_iterable(list)
 
 class Tetris(Render):
     def __init__(self, cx):
@@ -52,18 +53,27 @@ class Tetris(Render):
         if cx.frame % GAME_SPPED == 0:
           self.update()
 
-        return flatten([flatten(self.blocks), self.falling_block.blocks if self.falling_block else []])
+        return list(
+          flatten(
+            [
+              flatten(self.blocks),
+              self.falling_block.blocks if self.falling_block else []
+            ]
+          )
+        )
 
     def spawn_new_block(self, cx):
         block_type = random.choice(KEYS)
         spawn_position = (self.rows // 2, self.columns - 1)
-        print(spawn_position)
         new_block = []
 
-        for row in range(len(SHAPES[block_type])):
-          for column in range(len(SHAPES[block_type][row])):
-            if SHAPES[block_type][row][column]:
-              new_block.append(Block(COLORS[block_type], spawn_position[0] + column, spawn_position[1] - row))
+        block_shape = SHAPES[block_type]
+        block_color = COLORS[block_type]
+
+        for row in range(len(block_shape)):
+          for column in range(len(block_shape[row])):
+            if block_shape[row][column]:
+              new_block.append(Block(block_color, spawn_position[0] + column, spawn_position[1] - row))
 
         self.falling_block = FallingBlock(new_block)
 

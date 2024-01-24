@@ -4,6 +4,7 @@ from core.context import WindowContext
 from core.component import Render
 from datetime import datetime
 from typing import Callable
+from collections import deque
 import time
 
 
@@ -23,6 +24,7 @@ class Application(object):
         self.start_time = None
         self.target_fps = 60
         self.frame_rate = 0
+        self.should_render = False
 
         # Set base context
         self.cx = WindowContext().set_width(screen_size[0]).set_height(screen_size[1]).set_title(title)
@@ -48,12 +50,16 @@ class Application(object):
     # and due to the fact that this is an internal method
     # typing is not provided for this method
     def _run(self, components):
+        if not self.should_render:
+            return
+
         # Clear the screen
         glClear(GL_COLOR_BUFFER_BIT)
 
         # Render the scene
+        components = deque(components)
         while len(components) > 0:
-            component = components.pop(0)
+            component = components.popleft()
             if component is not None:
                 # Loop through the components and render them
                 result = component.render(self.cx)
@@ -62,6 +68,8 @@ class Application(object):
                 components.extend(result if isinstance(result, list) else [result])
         # Flush the buffer
         glFlush()
+
+        self.should_render = False
 
     def update(self, frame):
         self.cx.elapsed_time = (datetime.now() - self.start_time).total_seconds()
@@ -77,6 +85,7 @@ class Application(object):
             print(f"FPS: {self.frame_rate:.2f}")
             self.previous_time = current_time
 
+        self.should_render = True
         glutPostRedisplay()  # Trigger a redraw
         glutTimerFunc(int(1000 / self.target_fps), self.update, self.current_frame)  # Restart the timer
 

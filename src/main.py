@@ -7,7 +7,7 @@ from itertools import chain
 import random
 
 # Constants
-GAME_SPPED = 5 # Block moves down every 60 frames
+GAME_SPPED = 60 # Block moves down every 60 frames
 
 COLORS = {
   'I': (0.0, 1.0, 1.0, 1.0),
@@ -46,6 +46,8 @@ class Tetris(Render):
         self.initialize(cx)
 
     def initialize(self, cx):
+        cx.input.register(b'a', 0, lambda: self.move_block('left'))
+        cx.input.register(b'd', 0, lambda: self.move_block('right'))
         self.blocks = [[None for _ in range(self.rows)] for _ in range(self.columns)]
         self.spawn_new_block(cx)
 
@@ -76,6 +78,28 @@ class Tetris(Render):
               new_block.append(Block(block_color, spawn_position[0] + column, spawn_position[1] - row))
 
         self.falling_block = FallingBlock(new_block)
+
+    def move_block(self, direction):
+      if direction == 'left':
+        for block in self.falling_block.get_blocks():
+          if block.x <= 0:
+            return
+
+          if self.blocks[block.y][block.x - 1] is not None:
+            return
+
+        for block in self.falling_block.get_blocks():
+          block.x -= 1
+      elif direction == 'right':
+        for block in self.falling_block.get_blocks():
+          if block.x >= self.rows - 1:
+            return
+
+          if self.blocks[block.y][block.x + 1] is not None:
+            return
+
+        for block in self.falling_block.get_blocks():
+          block.x += 1
 
     def update(self):
       if self.check_collision():

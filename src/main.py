@@ -6,33 +6,10 @@ from core.openGLUtils import OpenGLUtils
 from itertools import chain
 import random
 
-# Constants
-GAME_SPPED = 60 # Block moves down every 60 frames
-
-COLORS = {
-  'I': (0.0, 1.0, 1.0, 1.0),
-  'J': (0.0, 0.0, 1.0, 1.0),
-  'L': (1.0, 0.64, 0.0, 1.0),
-  'O': (1.0, 1.0, 0.0, 1.0),
-  'S': (0.0, 1.0, 0.0, 1.0),
-  'T': (0.5, 0.0, 0.5, 1.0),
-  'Z': (1.0, 0.0, 0.0, 1.0),
-}
-
-SHAPES = {
-  'I': [[True, True, True, True]],
-  'J': [[True, False, False], [True, True, True]],
-  'L': [[False, False, True], [True, True, True]],
-  'O': [[True, True], [True, True]],
-  'S': [[False, True, True], [True, True, False]],
-  'T': [[False, True, False], [True, True, True]],
-  'Z': [[True, True, False], [False, True, True]],
-}
-
-KEYS = list(SHAPES.keys())
-
-def flatten(list):
-  return chain.from_iterable(list)
+from components.block import Block
+from components.falling_block import FallingBlock
+from constants import GAME_SPEED, COLORS, POSITIONS, KEYS
+from utils import flatten
 
 class Tetris(Render):
     def __init__(self, cx):
@@ -52,7 +29,9 @@ class Tetris(Render):
         self.spawn_new_block(cx)
 
     def render(self, cx):
-        if cx.frame % GAME_SPPED == 0:
+        glClearColor(0.9, 0.9, 0.9, 1.0)  # Set the background color to gray
+
+        if cx.frame % GAME_SPEED == 0:
           self.update()
 
         return list(
@@ -69,15 +48,13 @@ class Tetris(Render):
         spawn_position = (self.rows // 2, self.columns - 1)
         new_block = []
 
-        block_shape = SHAPES[block_type]
+        block_shape = POSITIONS[block_type]
         block_color = COLORS[block_type]
 
-        for row in range(len(block_shape)):
-          for column in range(len(block_shape[row])):
-            if block_shape[row][column]:
-              new_block.append(Block(block_color, spawn_position[0] + column, spawn_position[1] - row))
+        for position in block_shape:
+          new_block.append(Block(block_color, spawn_position[0] + position[0], spawn_position[1] - position[1]))
 
-        self.falling_block = FallingBlock(new_block)
+        self.falling_block = FallingBlock(new_block, block_type)
 
     def move_block(self, direction):
       if direction == 'left':
@@ -124,45 +101,6 @@ class Tetris(Render):
     @staticmethod
     def new(cx):
         return Tetris(cx)
-
-class Block(Component):
-  def __init__(self, color, x, y):
-    super().__init__()
-    self.color = color
-    self.x = x
-    self.y = y
-
-  def render(self, cx):
-    x, y = OpenGLUtils.convert_to_normalized_coordinates(self.x * 20, self.y * 20, cx.width, cx.height)
-    width, height = OpenGLUtils.convert_to_normalized_size(20, 20, cx.width, cx.height)
-
-    glPushMatrix()
-    glTranslatef(x, y, 0)  # Position the rectangle
-    glColor4f(self.color[0], self.color[1], self.color[2], self.color[3])  # Set the rectangle color
-    glBegin(GL_QUADS)
-    glVertex2f(0, 0)
-    glVertex2f(0, height)
-    glVertex2f(width, height)
-    glVertex2f(width, 0)
-    glEnd()
-    glPopMatrix()
-
-  def move_down(self):
-    self.y -= 1
-
-class FallingBlock(object):
-  def __init__(self, blocks):
-    self.blocks = blocks
-
-  def fall(self):
-    for block in self.blocks:
-      block.move_down()
-
-  def can_fall(self):
-    return True
-
-  def get_blocks(self):
-    return self.blocks
 
 if __name__ == '__main__':
   Application().run(lambda cx: Tetris.new(cx))

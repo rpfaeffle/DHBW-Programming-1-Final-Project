@@ -78,7 +78,7 @@ class Application(object):
         self.current_frame += 1
         self.cx.frame = self.current_frame
 
-        if frame % 60 == 0:
+        if frame % self.target_fps == 0:
             current_time = time.time()
             self.frame_rate = frame / self.cx.elapsed_time
             # Log current frame rate

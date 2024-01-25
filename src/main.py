@@ -7,8 +7,8 @@ from itertools import chain
 import random
 
 from components.block import Block
-from components.falling_block import FallingBlock
-from constants import GAME_SPEED, COLORS, POSITIONS, KEYS
+from components.shape import Shape
+from constants import GAME_SPEED, COLORS, POSITIONS, KEYS, ROTATION_ORIGINS
 from utils import flatten
 
 class Tetris(Render):
@@ -48,13 +48,11 @@ class Tetris(Render):
         spawn_position = (self.rows // 2, self.columns - 1)
         new_block = []
 
-        block_shape = POSITIONS[block_type]
-        block_color = COLORS[block_type]
-
-        for position in block_shape:
-          new_block.append(Block(block_color, spawn_position[0] + position[0], spawn_position[1] - position[1]))
-
-        self.falling_block = FallingBlock(new_block, block_type)
+        self.falling_block = Shape({
+          'color': COLORS[block_type],
+          'shape': POSITIONS[block_type],
+          'origin': ROTATION_ORIGINS[block_type],
+        }, spawn_position)
 
     def move_block(self, direction):
       if direction == 'left':
@@ -84,6 +82,7 @@ class Tetris(Render):
         self.falling_block = None
         self.spawn_new_block(self.cx)
       else:
+        self.falling_block.rotate_shape(True)
         self.falling_block.fall()
 
     def register_blocks(self, blocks):
@@ -92,6 +91,9 @@ class Tetris(Render):
 
     def check_collision(self):
       for block in self.falling_block.get_blocks():
+        if block.y >= len(self.blocks) - 1:
+          return False
+
         if block.y <= 0:
           return True
 

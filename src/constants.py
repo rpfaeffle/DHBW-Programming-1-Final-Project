@@ -24,3 +24,13 @@ POSITIONS = {
 }
 
 KEYS = list(set(COLORS.keys()))
+
+ROTATION_ORIGINS = {
+  'O': (0.5, 0.5),
+  'L': (0, 1),
+  'J': (1, 1),
+  'I': (0.5, 1.5),
+  'T': (1, 1),
+  'Z': (1, 1),
+  'S': (1, 1),
+}

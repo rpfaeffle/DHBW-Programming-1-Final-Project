@@ -7,7 +7,7 @@ from itertools import chain
 import random
 
 from components.block import Block
-from components.shape import Shape
+from components.shape import Shape, ShapeProps
 from constants import GAME_SPEED, COLORS, POSITIONS, KEYS, ROTATION_ORIGINS
 from utils import flatten
 
@@ -48,11 +48,11 @@ class Tetris(Render):
         spawn_position = (self.rows // 2, self.columns - 1)
         new_block = []
 
-        self.falling_block = Shape({
-          'color': COLORS[block_type],
-          'shape': POSITIONS[block_type],
-          'origin': ROTATION_ORIGINS[block_type],
-        }, spawn_position)
+        self.falling_block = Shape(ShapeProps(
+          color=COLORS[block_type],
+          shape=POSITIONS[block_type],
+          origin=ROTATION_ORIGINS[block_type],
+        ), spawn_position, self.is_position_vacant)
 
     def move_block(self, direction):
       if direction == 'left':
@@ -63,8 +63,7 @@ class Tetris(Render):
           if self.blocks[block.y][block.x - 1] is not None:
             return
 
-        for block in self.falling_block.get_blocks():
-          block.x -= 1
+        self.falling_block.move_horizantally('left')
       elif direction == 'right':
         for block in self.falling_block.get_blocks():
           if block.x >= self.rows - 1:
@@ -73,8 +72,7 @@ class Tetris(Render):
           if self.blocks[block.y][block.x + 1] is not None:
             return
 
-        for block in self.falling_block.get_blocks():
-          block.x += 1
+        self.falling_block.move_horizantally('right')
 
     def update(self):
       if self.check_collision():
@@ -91,14 +89,25 @@ class Tetris(Render):
 
     def check_collision(self):
       for block in self.falling_block.get_blocks():
-        if block.y >= len(self.blocks) - 1:
-          return False
-
-        if block.y <= 0:
+        if not self.is_position_vacant((block.x, block.y - 1)):
           return True
+      return False
 
-        if self.blocks[block.y - 1][block.x] is not None:
+    def is_position_vacant(self, position):
+      """
+      Check if a given position is vacant in the grid.
+
+      Parameters:
+        - position (tuple): The position to check in the format (row, column).
+
+      Returns:
+        - bool: True if the position is vacant, False otherwise.
+      """
+      if position[1] >= 0 and position[0] >= 0 and position[0] < self.rows:
+        if position[1] >= self.columns:
           return True
+        return self.blocks[position[1]][position[0]] is None
+      return False
 
     @staticmethod
     def new(cx):

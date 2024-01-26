@@ -23,3 +23,4 @@ class Input:
 
     def start(self):
         glutKeyboardFunc(self.handle_keyboard_event)
+        glutSpecialFunc(self.handle_keyboard_event)

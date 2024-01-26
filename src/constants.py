@@ -42,6 +42,11 @@ class Direction(Enum):
   LEFT = 1
   RIGHT = 2
 
+class Keys(Enum):
+  LEFT_ARROW = 100
+  RIGHT_ARROW = 102
+  DOWN_ARROW = 103
+
 class RotationAngles(Enum):
   CLOCKWISE_ANGLE = math.pi / 2
   COUNTER_CLOCKWISE_ANGLE = -math.pi / 2

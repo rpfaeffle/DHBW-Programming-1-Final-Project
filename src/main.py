@@ -25,8 +25,11 @@ class Tetris(Render):
         self.initialize(cx)
 
     def initialize(self, cx):
-        cx.input.register(b'a', 0, lambda: self.move_block(Direction.LEFT))
-        cx.input.register(b'd', 0, lambda: self.move_block(Direction.RIGHT))
+        cx.input.register(Keys.LEFT_ARROW.value, 0, lambda: self.move_block(Direction.LEFT))
+        cx.input.register(Keys.RIGHT_ARROW.value, 0, lambda: self.move_block(Direction.RIGHT))
+        cx.input.register(Keys.DOWN_ARROW.value, 0, lambda: self.update())
+        cx.input.register(b'z', 0, lambda: self.falling_block.rotate_shape(False))
+        cx.input.register(b'c', 0, lambda: self.falling_block.rotate_shape(True))
         self.blocks = [[None for _ in range(self.rows)] for _ in range(self.columns)]
         self.lines = [
           Line((0, i * BLOCK_SIZE), (cx.width, i * BLOCK_SIZE)) for i in range(self.columns)
@@ -77,7 +80,6 @@ class Tetris(Render):
         self.falling_block = None
         self.spawn_new_block(self.cx)
       else:
-        self.falling_block.rotate_shape(True)
         self.falling_block.fall()
 
     def register_blocks(self, blocks):

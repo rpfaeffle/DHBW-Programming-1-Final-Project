@@ -1,5 +1,4 @@
-from OpenGL.GLUT import *
-from OpenGL.GL import *
+import OpenGL.GL as gl
 from core.application import Application
 from core.component import Component, Render
 from core.openGLUtils import OpenGLUtils
@@ -39,7 +38,7 @@ class Tetris(Render):
         self.spawn_new_block()
 
     def render(self, cx):
-        glClearColor(0.9, 0.9, 0.9, 1.0)  # Set the background color to gray
+        gl.glClearColor(0.9, 0.9, 0.9, 1.0)  # Set the background color to gray
 
         if cx.frame % GAME_SPEED == 0:
           self.update()

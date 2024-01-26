@@ -1,4 +1,4 @@
-from OpenGL.GL import *
+import OpenGL.GL as gl
 from core.component import Component
 from core.context import WindowContext
 from core.openGLUtils import OpenGLUtils
@@ -20,10 +20,10 @@ class Line(Component):
         x1, y1 = self.normalized_start_pos
         x2, y2 = self.normalized_end_pos
 
-        glPushMatrix()
-        glColor4f(*self.color)
-        glBegin(GL_LINES)
-        glVertex2f(x1, y1)
-        glVertex2f(x2, y2)
-        glEnd()
-        glPopMatrix()
+        gl.glPushMatrix()
+        gl.glColor4f(*self.color)
+        gl.glBegin(gl.GL_LINES)
+        gl.glVertex2f(x1, y1)
+        gl.glVertex2f(x2, y2)
+        gl.glEnd()
+        gl.glPopMatrix()

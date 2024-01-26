@@ -1,5 +1,5 @@
-from OpenGL.GL import *
-from OpenGL.GLUT import *
+import OpenGL.GL as gl
+import OpenGL.GLUT as glut
 from core.context import WindowContext
 from core.component import Render
 from datetime import datetime
@@ -30,11 +30,11 @@ class Application(object):
         self.cx = WindowContext().set_width(screen_size[0]).set_height(screen_size[1]).set_title(title)
 
         # Initialize the OpenGL window
-        glutInit()
+        glut.glutInit()
         # Set the size of the window
-        glutInitWindowSize(screen_size[0], screen_size[1])
+        glut.glutInitWindowSize(screen_size[0], screen_size[1])
         # Set the title of the window
-        glutCreateWindow(title)
+        glut.glutCreateWindow(title)
 
     def initialize(self):
         self.start_time = datetime.now()
@@ -54,7 +54,7 @@ class Application(object):
             return
 
         # Clear the screen
-        glClear(GL_COLOR_BUFFER_BIT)
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
         # Render the scene
         components = deque(components)
@@ -67,7 +67,7 @@ class Application(object):
                 # otherwise append the component
                 components.extend(result if isinstance(result, list) else [result])
         # Flush the buffer
-        glFlush()
+        gl.glFlush()
 
         self.should_render = False
 
@@ -86,8 +86,8 @@ class Application(object):
             self.previous_time = current_time
 
         self.should_render = True
-        glutPostRedisplay()  # Trigger a redraw
-        glutTimerFunc(int(1000 / self.target_fps), self.update, self.current_frame)  # Restart the timer
+        glut.glutPostRedisplay()  # Trigger a redraw
+        glut.glutTimerFunc(int(1000 / self.target_fps), self.update, self.current_frame)  # Restart the timer
 
     def run(self, callback: Callable[[WindowContext], Render]):
         # Startup
@@ -95,12 +95,12 @@ class Application(object):
         # Get the base component
         base_component = callback(self.cx)
         # Set the display function, this is the applications run function
-        glutDisplayFunc(lambda: self._run([base_component]))
+        glut.glutDisplayFunc(lambda: self._run([base_component]))
         # Set a timer to trigger a redraw of the screen
-        glutTimerFunc(int(1000 / self.target_fps), self.update, 0)
+        glut.glutTimerFunc(int(1000 / self.target_fps), self.update, 0)
 
         if self.setup is not None:
           self.setup(self.cx)
 
         # Start the main OpenGL loop
-        glutMainLoop()
+        glut.glutMainLoop()

@@ -77,10 +77,24 @@ class Tetris(Render):
     def update(self):
       if self.check_collision():
         self.register_blocks(self.falling_block.blocks)
+        self.remove_full_rows()
         self.falling_block = None
         self.spawn_new_block(self.cx)
       else:
         self.falling_block.fall()
+
+    def remove_full_rows(self):
+        for i in range(self.columns):
+            if all(self.blocks[i]):
+                self.move_all_blocks_down(i)
+                self.blocks.pop(i)
+                self.blocks.append([None for _ in range(self.rows)])
+
+    def move_all_blocks_down(self, row):
+      for i in range(row, self.columns):
+        for j in range(self.rows):
+          if self.blocks[i][j]:
+            self.blocks[i][j].move_down()
 
     def register_blocks(self, blocks):
       for block in blocks:

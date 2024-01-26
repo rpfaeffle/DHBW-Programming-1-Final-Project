@@ -1,6 +1,7 @@
 from OpenGL.GL import *
 from core.component import Component
 from core.openGLUtils import OpenGLUtils
+from constants import BLOCK_SIZE
 
 class Block(Component):
   def __init__(self, color, x, y):
@@ -10,8 +11,8 @@ class Block(Component):
     self.y = y
 
   def render(self, cx):
-    x, y = OpenGLUtils.convert_to_normalized_coordinates(self.x * 20, self.y * 20, cx.width, cx.height)
-    width, height = OpenGLUtils.convert_to_normalized_size(20, 20, cx.width, cx.height)
+    x, y = OpenGLUtils.convert_to_normalized_coordinates(self.x * BLOCK_SIZE, self.y * BLOCK_SIZE, cx.width, cx.height)
+    width, height = OpenGLUtils.convert_to_normalized_size(BLOCK_SIZE, BLOCK_SIZE, cx.width, cx.height)
 
     glPushMatrix()
     glTranslatef(x, y, 0)  # Position the rectangle

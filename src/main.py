@@ -7,18 +7,20 @@ from itertools import chain
 import random
 
 from components.block import Block
+from components.line import Line
 from components.shape import Shape, ShapeProps
-from constants import GAME_SPEED, COLORS, POSITIONS, KEYS, ROTATION_ORIGINS
+from constants import *
 from utils import flatten
 
 class Tetris(Render):
     def __init__(self, cx):
         self.cx = None
         self.blocks = []
+        self.lines = []
         self.falling_block = None
 
-        self.rows = cx.width // 20
-        self.columns = cx.height // 20
+        self.rows = cx.width // BLOCK_SIZE
+        self.columns = cx.height // BLOCK_SIZE
 
         self.initialize(cx)
 
@@ -26,6 +28,11 @@ class Tetris(Render):
         cx.input.register(b'a', 0, lambda: self.move_block('left'))
         cx.input.register(b'd', 0, lambda: self.move_block('right'))
         self.blocks = [[None for _ in range(self.rows)] for _ in range(self.columns)]
+        self.lines = [
+          Line((0, i * BLOCK_SIZE), (cx.width, i * BLOCK_SIZE)) for i in range(self.columns)
+        ] + [
+          Line((i * BLOCK_SIZE, 0), (i * BLOCK_SIZE, cx.height)) for i in range(self.rows)
+        ]
         self.spawn_new_block(cx)
 
     def render(self, cx):
@@ -34,14 +41,10 @@ class Tetris(Render):
         if cx.frame % GAME_SPEED == 0:
           self.update()
 
-        return list(
-          flatten(
-            [
-              flatten(self.blocks),
-              self.falling_block.blocks if self.falling_block else []
-            ]
-          )
-        )
+        blocks = list(flatten(self.blocks))
+        falling_blocks = self.falling_block.blocks if self.falling_block else []
+
+        return blocks + falling_blocks + self.lines
 
     def spawn_new_block(self, cx):
         block_type = random.choice(KEYS)

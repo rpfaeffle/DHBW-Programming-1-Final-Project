@@ -17,6 +17,7 @@ class Tetris(Render):
         self.lines = []
         self.falling_block = None
         self.score = 0
+        self.game_over = False
 
         self.columns = cx.width // BLOCK_SIZE
         self.rows = TOTAL_ROWS
@@ -40,7 +41,7 @@ class Tetris(Render):
     def render(self, cx):
         gl.glClearColor(0.9, 0.9, 0.9, 1.0)  # Set the background color to gray
 
-        if cx.frame % GAME_SPEED == 0:
+        if cx.frame % GAME_SPEED == 0 and not self.game_over:
           self.update()
 
         blocks = list(flatten(self.blocks))
@@ -76,6 +77,12 @@ class Tetris(Render):
     def update(self):
       if self.check_collision():
         self.register_blocks(self.falling_block.blocks)
+
+        if self.check_game_over():
+          self.game_over = True
+          print("Game Over")
+          return
+
         self.remove_full_rows()
         self.falling_block = None
         self.spawn_new_block()
@@ -103,6 +110,9 @@ class Tetris(Render):
         elif rows == 4:
             self.score += 1200
         print(f"Score: {self.score}")
+
+    def check_game_over(self):
+        return not all(block is None for block in self.blocks[VISIBLE_ROWS])
 
     def move_all_blocks_down(self, row):
       for i in range(row, self.rows):

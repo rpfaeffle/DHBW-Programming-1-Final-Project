@@ -39,7 +39,11 @@ class Shape:
         relative_pos = (starting_pos[0] - origin[0], starting_pos[1] - origin[1])
         new_x = relative_pos[0] * math.cos(rotation_angle) - relative_pos[1] * math.sin(rotation_angle)
         new_y = relative_pos[0] * math.sin(rotation_angle) + relative_pos[1] * math.cos(rotation_angle)
-        return (int(new_x + origin[0]), int(new_y + origin[1]))
+        # Just casting the values to an int causes the block to move to the left
+        # (because of the fact that the decimals get cut off instead of rounded)
+        # so we need to add the origin to the new position to get the correct position
+        # and round the final values.
+        return (int(round(new_x + origin[0])), int(round(new_y + origin[1])))
 
     def rotate_shape(self, is_clockwise: bool):
         if not self.can_rotate():
@@ -50,7 +54,7 @@ class Shape:
             block.x = new_pos[0]
             block.y = new_pos[1]
 
-    def move_horizantally(self, direction):
+    def move_horizontally(self, direction):
         self.current_pos = (self.current_pos[0] + (1 if direction == 'right' else -1), self.current_pos[1])
         if direction == 'left':
             for block in self.blocks:

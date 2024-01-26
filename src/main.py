@@ -60,22 +60,16 @@ class Tetris(Render):
     def move_block(self, direction):
       if direction == 'left':
         for block in self.falling_block.get_blocks():
-          if block.x <= 0:
+          if not self.is_position_vacant((block.x - 1, block.y)):
             return
 
-          if self.blocks[block.y][block.x - 1] is not None:
-            return
-
-        self.falling_block.move_horizantally('left')
+        self.falling_block.move_horizontally('left')
       elif direction == 'right':
         for block in self.falling_block.get_blocks():
-          if block.x >= self.rows - 1:
+          if not self.is_position_vacant((block.x + 1, block.y)):
             return
 
-          if self.blocks[block.y][block.x + 1] is not None:
-            return
-
-        self.falling_block.move_horizantally('right')
+        self.falling_block.move_horizontally('right')
 
     def update(self):
       if self.check_collision():

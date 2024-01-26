@@ -3,8 +3,10 @@ from enum import Enum
 from utils import color
 
 # Constants
-GAME_SPEED = 5 # Block moves down every 60 frames
+GAME_SPEED = 60 # Block moves down every 60 frames
 BLOCK_SIZE = 20
+TOTAL_ROWS = 40 # Defined as 40 to allow for blocks to be spawned above the screen
+VISIBLE_ROWS = 20
 
 COLORS = {
   'O': color(255, 239, 43),

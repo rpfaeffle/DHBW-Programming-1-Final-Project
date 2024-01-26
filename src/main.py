@@ -14,13 +14,13 @@ from utils import flatten
 
 class Tetris(Render):
     def __init__(self, cx):
-        self.cx = None
         self.blocks = []
         self.lines = []
         self.falling_block = None
+        self.score = 0
 
-        self.rows = cx.width // BLOCK_SIZE
-        self.columns = cx.height // BLOCK_SIZE
+        self.columns = cx.width // BLOCK_SIZE
+        self.rows = TOTAL_ROWS
 
         self.initialize(cx)
 
@@ -30,13 +30,13 @@ class Tetris(Render):
         cx.input.register(Keys.DOWN_ARROW.value, 0, lambda: self.update())
         cx.input.register(b'z', 0, lambda: self.falling_block.rotate_shape(False))
         cx.input.register(b'c', 0, lambda: self.falling_block.rotate_shape(True))
-        self.blocks = [[None for _ in range(self.rows)] for _ in range(self.columns)]
+        self.blocks = [[None for _ in range(self.columns)] for _ in range(self.rows)]
         self.lines = [
-          Line((0, i * BLOCK_SIZE), (cx.width, i * BLOCK_SIZE)) for i in range(self.columns)
+          Line((0, i * BLOCK_SIZE), (cx.width, i * BLOCK_SIZE)) for i in range(self.rows)
         ] + [
-          Line((i * BLOCK_SIZE, 0), (i * BLOCK_SIZE, cx.height)) for i in range(self.rows)
+          Line((i * BLOCK_SIZE, 0), (i * BLOCK_SIZE, cx.height)) for i in range(self.columns)
         ]
-        self.spawn_new_block(cx)
+        self.spawn_new_block()
 
     def render(self, cx):
         glClearColor(0.9, 0.9, 0.9, 1.0)  # Set the background color to gray
@@ -49,9 +49,9 @@ class Tetris(Render):
 
         return blocks + falling_blocks + self.lines
 
-    def spawn_new_block(self, cx):
+    def spawn_new_block(self):
         block_type = random.choice(KEYS)
-        spawn_position = (self.rows // 2, self.columns - 1)
+        spawn_position = (self.columns // 2, VISIBLE_ROWS + 1)
         new_block = []
 
         self.falling_block = Shape(ShapeProps(
@@ -79,20 +79,35 @@ class Tetris(Render):
         self.register_blocks(self.falling_block.blocks)
         self.remove_full_rows()
         self.falling_block = None
-        self.spawn_new_block(self.cx)
+        self.spawn_new_block()
       else:
         self.falling_block.fall()
 
     def remove_full_rows(self):
+        rows_to_remove = []
         for i in range(self.columns):
             if all(self.blocks[i]):
-                self.move_all_blocks_down(i)
-                self.blocks.pop(i)
-                self.blocks.append([None for _ in range(self.rows)])
+                rows_to_remove.append(i)
+        for row in reversed(rows_to_remove):
+            self.move_all_blocks_down(row)
+            self.blocks.pop(row)
+            self.blocks.append([None for _ in range(self.columns)])
+        self.update_score(len(rows_to_remove))
+
+    def update_score(self, rows):
+        if rows == 1:
+            self.score += 40
+        elif rows == 2:
+            self.score += 100
+        elif rows == 3:
+            self.score += 300
+        elif rows == 4:
+            self.score += 1200
+        print(f"Score: {self.score}")
 
     def move_all_blocks_down(self, row):
-      for i in range(row, self.columns):
-        for j in range(self.rows):
+      for i in range(row, self.rows):
+        for j in range(self.columns):
           if self.blocks[i][j]:
             self.blocks[i][j].move_down()
 
@@ -116,8 +131,8 @@ class Tetris(Render):
       Returns:
         - bool: True if the position is vacant, False otherwise.
       """
-      if position[1] >= 0 and position[0] >= 0 and position[0] < self.rows:
-        if position[1] >= self.columns:
+      if position[1] >= 0 and position[0] >= 0 and position[0] < self.columns:
+        if position[1] >= self.rows:
           return True
         return self.blocks[position[1]][position[0]] is None
       return False
@@ -127,4 +142,4 @@ class Tetris(Render):
         return Tetris(cx)
 
 if __name__ == '__main__':
-  Application().run(lambda cx: Tetris.new(cx))
+  Application(None, [200, 400]).run(lambda cx: Tetris.new(cx))

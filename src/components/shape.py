@@ -40,7 +40,7 @@ class Shape:
         new_x = relative_pos[0] * cos_angle - relative_pos[1] * sin_angle
         new_y = relative_pos[0] * sin_angle + relative_pos[1] * cos_angle
         # Just casting the values to an int causes the block to move to the left
-        # (because of the fact that the decimals get cut off instead of rounded)
+        # (because the decimals get cut off instead of rounded)
         # so we need to add the origin to the new position to get the correct position
         # and round the final values.
         return (int(round(new_x + origin[0])), int(round(new_y + origin[1])))

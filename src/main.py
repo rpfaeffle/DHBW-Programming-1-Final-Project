@@ -1,8 +1,8 @@
+from typing import Optional
+
 import OpenGL.GL as gl
 from core.application import Application
-from core.component import Component, Render
-from core.openGLUtils import OpenGLUtils
-from itertools import chain
+from core.component import Render
 import random
 
 from components.block import Block
@@ -13,9 +13,9 @@ from utils import flatten
 
 class Tetris(Render):
     def __init__(self, cx):
-        self.blocks = []
-        self.lines = []
-        self.falling_block = None
+        self.blocks: list[list[Optional[Block]]] = []
+        self.lines: list[Line] = []
+        self.falling_block: Optional[Shape] = None
         self.score = 0
         self.game_over = False
 
@@ -24,12 +24,18 @@ class Tetris(Render):
 
         self.initialize(cx)
 
-    def initialize(self, cx):
+    def setup_event_listeners(self, cx):
+        """
+        Setup event listeners for the game.
+        """
         cx.input.register(Keys.LEFT_ARROW.value, 0, lambda: self.move_block(Direction.LEFT))
         cx.input.register(Keys.RIGHT_ARROW.value, 0, lambda: self.move_block(Direction.RIGHT))
         cx.input.register(Keys.DOWN_ARROW.value, 0, lambda: self.update())
         cx.input.register(b'z', 0, lambda: self.falling_block.rotate_shape(False))
         cx.input.register(b'c', 0, lambda: self.falling_block.rotate_shape(True))
+
+    def initialize(self, cx):
+        self.setup_event_listeners(cx)
         self.blocks = [[None for _ in range(self.columns)] for _ in range(self.rows)]
         self.lines = [
           Line((0, i * BLOCK_SIZE), (cx.width, i * BLOCK_SIZE)) for i in range(self.rows)
@@ -52,7 +58,6 @@ class Tetris(Render):
     def spawn_new_block(self):
         block_type = random.choice(KEYS)
         spawn_position = (self.columns // 2, VISIBLE_ROWS + 1)
-        new_block = []
 
         self.falling_block = Shape(ShapeProps(
           color=COLORS[block_type],

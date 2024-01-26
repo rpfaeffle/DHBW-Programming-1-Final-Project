@@ -1,3 +1,5 @@
+import math
+from enum import Enum
 from utils import color
 
 # Constants
@@ -35,3 +37,11 @@ ROTATION_ORIGINS = {
   'Z': (1, 1),
   'S': (1, 1),
 }
+
+class Direction(Enum):
+  LEFT = 1
+  RIGHT = 2
+
+class RotationAngles(Enum):
+  CLOCKWISE_ANGLE = math.pi / 2
+  COUNTER_CLOCKWISE_ANGLE = -math.pi / 2

@@ -25,8 +25,8 @@ class Tetris(Render):
         self.initialize(cx)
 
     def initialize(self, cx):
-        cx.input.register(b'a', 0, lambda: self.move_block('left'))
-        cx.input.register(b'd', 0, lambda: self.move_block('right'))
+        cx.input.register(b'a', 0, lambda: self.move_block(Direction.LEFT))
+        cx.input.register(b'd', 0, lambda: self.move_block(Direction.RIGHT))
         self.blocks = [[None for _ in range(self.rows)] for _ in range(self.columns)]
         self.lines = [
           Line((0, i * BLOCK_SIZE), (cx.width, i * BLOCK_SIZE)) for i in range(self.columns)
@@ -57,19 +57,19 @@ class Tetris(Render):
           origin=ROTATION_ORIGINS[block_type],
         ), spawn_position, self.is_position_vacant)
 
-    def move_block(self, direction):
-      if direction == 'left':
-        for block in self.falling_block.get_blocks():
+    def move_block(self, direction: Direction):
+      if direction == Direction.LEFT:
+        for block in self.falling_block.blocks:
           if not self.is_position_vacant((block.x - 1, block.y)):
             return
 
-        self.falling_block.move_horizontally('left')
-      elif direction == 'right':
-        for block in self.falling_block.get_blocks():
+        self.falling_block.move_horizontally(direction)
+      elif direction == Direction.RIGHT:
+        for block in self.falling_block.blocks:
           if not self.is_position_vacant((block.x + 1, block.y)):
             return
 
-        self.falling_block.move_horizontally('right')
+        self.falling_block.move_horizontally(direction)
 
     def update(self):
       if self.check_collision():
@@ -85,7 +85,7 @@ class Tetris(Render):
         self.blocks[block.y][block.x] = block
 
     def check_collision(self):
-      for block in self.falling_block.get_blocks():
+      for block in self.falling_block.blocks:
         if not self.is_position_vacant((block.x, block.y - 1)):
           return True
       return False

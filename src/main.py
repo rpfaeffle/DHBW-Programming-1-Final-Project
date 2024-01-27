@@ -16,13 +16,21 @@ class Tetris(Render):
         self.blocks: list[list[Optional[Block]]] = []
         self.lines: list[Line] = []
         self.falling_block: Optional[Shape] = None
+        self.falling_speed = GAME_SPEED
         self.score = 0
+        self.level = 1
+        self.tetrises = 0
         self.game_over = False
 
         self.columns = cx.width // BLOCK_SIZE
         self.rows = TOTAL_ROWS
 
+        self.update_game_speed()
         self.initialize(cx)
+
+    def update_game_speed(self):
+        # Formula based on https://harddrop.com/wiki/Tetris_Worlds
+        self.falling_speed = int(GAME_SPEED * math.pow(0.8 - ((self.level - 1) * 0.007), self.level - 1))
 
     def setup_event_listeners(self, cx):
         """
@@ -47,7 +55,7 @@ class Tetris(Render):
     def render(self, cx):
         gl.glClearColor(0.9, 0.9, 0.9, 1.0)  # Set the background color to gray
 
-        if cx.frame % GAME_SPEED == 0 and not self.game_over:
+        if cx.frame % self.falling_speed == 0 and not self.game_over:
           self.update()
 
         blocks = list(flatten(self.blocks))
@@ -106,6 +114,7 @@ class Tetris(Render):
         self.update_score(len(rows_to_remove))
 
     def update_score(self, rows):
+        self.tetrises += rows
         if rows == 1:
             self.score += 40
         elif rows == 2:
@@ -114,6 +123,14 @@ class Tetris(Render):
             self.score += 300
         elif rows == 4:
             self.score += 1200
+
+        # Advance level if tetrises is greater than or equal to the current level * 10 + 10
+        if self.tetrises >= self.level * 10 + 10:
+            self.tetrises = 0
+            self.level += 1
+            self.update_game_speed()
+            print(f"Reached Level: {self.level}")
+
         print(f"Score: {self.score}")
 
     def check_game_over(self):

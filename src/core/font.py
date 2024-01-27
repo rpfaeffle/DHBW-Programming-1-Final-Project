@@ -1,24 +1,23 @@
 import OpenGL.GL as gl
 import freetype
 
-from core.context import WindowContext
-
 SUPPORTED_CHARACTERS = 128
 
 class Font:
-    def __init__(self, font_name: str, size: int, cx: WindowContext):
+    def __init__(self, font_name: str, size: int, cx):
         self.font_name = font_name
         self.size = size
         self.width = 0
 
         self.list_base = gl.glGenLists(SUPPORTED_CHARACTERS)
+
         self.face = freetype.Face(font_name)
-        self.face.set_char_size(size * 64)
+        self.face.set_char_size(size * 64 * 4)
 
         self.load(cx)
 
 
-    def load(self, cx: WindowContext):
+    def load(self, cx):
         gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
         for i in range(SUPPORTED_CHARACTERS):
             self.face.load_char(chr(i), freetype.FT_LOAD_RENDER | freetype.FT_LOAD_FORCE_AUTOHINT)

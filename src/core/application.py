@@ -2,6 +2,7 @@ import OpenGL.GL as gl
 import OpenGL.GLUT as glut
 from core.context import WindowContext
 from core.component import Render
+from core.font import Font
 from datetime import datetime
 from typing import Callable
 from collections import deque
@@ -36,11 +37,18 @@ class Application(object):
         # Set the title of the window
         glut.glutCreateWindow(title)
 
+        # Initialize the font after the window has been initialized
+        self.cx.font = Font("assets/fonts/SpaceMono-Regular.ttf", 12, self.cx)
+
     def initialize(self):
         self.start_time = datetime.now()
         self.previous_time = time.time()
         self.current_frame = 0
         self.cx.input.start()
+
+        gl.glEnable(gl.GL_TEXTURE_2D)
+        gl.glEnable(gl.GL_BLEND)
+        gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
 
     # implement by initializing the class
     def render(self):
@@ -66,6 +74,7 @@ class Application(object):
                 # If the component is a list, extend the list
                 # otherwise append the component
                 components.extend(result if isinstance(result, list) else [result])
+
         # Flush the buffer
         gl.glFlush()
 

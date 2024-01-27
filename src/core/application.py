@@ -75,6 +75,9 @@ class Application(object):
                 # otherwise append the component
                 components.extend(result if isinstance(result, list) else [result])
 
+        gl.glColor3f(0, 0, 0)
+        self.cx.font.draw(f"FPS: {self.frame_rate:.2f}", -0.99, .9)
+
         # Flush the buffer
         gl.glFlush()
 
@@ -90,8 +93,6 @@ class Application(object):
         if frame % self.target_fps == 0:
             current_time = time.time()
             self.frame_rate = frame / self.cx.elapsed_time
-            # Log current frame rate
-            print(f"FPS: {self.frame_rate:.2f}")
             self.previous_time = current_time
 
         self.should_render = True

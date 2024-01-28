@@ -45,10 +45,9 @@ class Shape:
         # and round the final values.
         return (int(round(new_x + origin[0])), int(round(new_y + origin[1])))
 
-    def rotate_shape(self, is_clockwise: bool):
-        rotation_angle = (RotationAngles.CLOCKWISE_ANGLE if is_clockwise else RotationAngles.COUNTER_CLOCKWISE_ANGLE).value
-        cos_angle = math.cos(rotation_angle)
-        sin_angle = math.sin(rotation_angle)
+    def rotate_shape(self, rotation_angle: RotationAngles):
+        cos_angle = math.cos(rotation_angle.value)
+        sin_angle = math.sin(rotation_angle.value)
 
         if not self.can_rotate(cos_angle, sin_angle):
             return
@@ -58,13 +57,9 @@ class Shape:
             block.x, block.y = new_pos
 
     def move_horizontally(self, direction: Direction):
-        self.current_pos = (self.current_pos[0] + (1 if direction == Direction.RIGHT else -1), self.current_pos[1])
-        if direction == Direction.LEFT:
-            for block in self.blocks:
-                block.x -= 1
-        elif direction == Direction.RIGHT:
-            for block in self.blocks:
-                block.x += 1
+        self.current_pos = (self.current_pos[0] + direction.value, self.current_pos[1])
+        for block in self.blocks:
+            block.x += direction.value
 
     def fall(self):
         self.current_pos = (self.current_pos[0], self.current_pos[1] - 1)

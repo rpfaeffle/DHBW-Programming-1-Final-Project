@@ -39,8 +39,8 @@ class Tetris(Render):
         cx.input.register(Keys.LEFT_ARROW.value, 0, lambda: self.move_block(Direction.LEFT))
         cx.input.register(Keys.RIGHT_ARROW.value, 0, lambda: self.move_block(Direction.RIGHT))
         cx.input.register(Keys.DOWN_ARROW.value, 0, lambda: self.update())
-        cx.input.register(b'z', 0, lambda: self.falling_block.rotate_shape(False))
-        cx.input.register(b'c', 0, lambda: self.falling_block.rotate_shape(True))
+        cx.input.register(b'z', 0, lambda: self.falling_block.rotate_shape(RotationAngles.CLOCKWISE))
+        cx.input.register(b'c', 0, lambda: self.falling_block.rotate_shape(RotationAngles.COUNTER_CLOCKWISE))
 
     def initialize(self, cx):
         self.setup_event_listeners(cx)
@@ -64,7 +64,7 @@ class Tetris(Render):
         return blocks + falling_blocks + self.lines
 
     def spawn_new_block(self):
-        block_type = random.choice(KEYS)
+        block_type = random.choice(SHAPE_IDS)
         spawn_position = (self.columns // 2, VISIBLE_ROWS + 1)
 
         self.falling_block = Shape(ShapeProps(
@@ -77,10 +77,8 @@ class Tetris(Render):
       """
       Move the falling block in the given direction if the position is vacant.
       """
-      v = -1 if direction == Direction.LEFT else 1
-
       for block in self.falling_block.blocks:
-        if not self.is_position_vacant((block.x + v, block.y)):
+        if not self.is_position_vacant((block.x + direction.value, block.y)):
           return
 
       self.falling_block.move_horizontally(direction)

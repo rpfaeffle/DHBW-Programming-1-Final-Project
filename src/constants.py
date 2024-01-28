@@ -28,7 +28,7 @@ POSITIONS = {
   'S': [(0, 1), (1, 1), (1, 0), (2, 0)],
 }
 
-KEYS = list(set(COLORS.keys()))
+SHAPE_IDS = list(set(COLORS.keys()))
 
 ROTATION_ORIGINS = {
   'O': (0.5, 0.5),
@@ -41,8 +41,8 @@ ROTATION_ORIGINS = {
 }
 
 class Direction(Enum):
-  LEFT = 1
-  RIGHT = 2
+  LEFT = -1
+  RIGHT = 1
 
 class Keys(Enum):
   LEFT_ARROW = 100
@@ -50,5 +50,5 @@ class Keys(Enum):
   DOWN_ARROW = 103
 
 class RotationAngles(Enum):
-  CLOCKWISE_ANGLE = math.pi / 2
-  COUNTER_CLOCKWISE_ANGLE = -math.pi / 2
+  CLOCKWISE = math.pi / 2
+  COUNTER_CLOCKWISE = -math.pi / 2

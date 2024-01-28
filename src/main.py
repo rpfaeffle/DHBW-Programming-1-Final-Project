@@ -58,7 +58,7 @@ class Tetris(Render):
         if cx.frame % self.falling_speed == 0 and not self.game_over:
           self.update()
 
-        blocks = list(flatten(self.blocks))
+        blocks = flatten(self.blocks)
         falling_blocks = self.falling_block.blocks if self.falling_block else []
 
         return blocks + falling_blocks + self.lines

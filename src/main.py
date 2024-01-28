@@ -74,18 +74,16 @@ class Tetris(Render):
         ), spawn_position, self.is_position_vacant)
 
     def move_block(self, direction: Direction):
-      if direction == Direction.LEFT:
-        for block in self.falling_block.blocks:
-          if not self.is_position_vacant((block.x - 1, block.y)):
-            return
+      """
+      Move the falling block in the given direction if the position is vacant.
+      """
+      v = -1 if direction == Direction.LEFT else 1
 
-        self.falling_block.move_horizontally(direction)
-      elif direction == Direction.RIGHT:
-        for block in self.falling_block.blocks:
-          if not self.is_position_vacant((block.x + 1, block.y)):
-            return
+      for block in self.falling_block.blocks:
+        if not self.is_position_vacant((block.x + v, block.y)):
+          return
 
-        self.falling_block.move_horizontally(direction)
+      self.falling_block.move_horizontally(direction)
 
     def update(self):
       if self.check_collision():

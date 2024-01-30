@@ -22,5 +22,3 @@ class Text(Component):
         for i in range(len(lines)):
           line = lines[i]
           cx.font.draw(line, x, y - i * cx.font.dimension.height)
-
-        return self

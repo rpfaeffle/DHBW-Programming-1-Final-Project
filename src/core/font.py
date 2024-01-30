@@ -1,5 +1,6 @@
 import OpenGL.GL as gl
 import freetype
+from core.size import Size
 
 SUPPORTED_CHARACTERS = 128
 
@@ -7,7 +8,7 @@ class Font:
     def __init__(self, font_name: str, size: int, cx):
         self.font_name = font_name
         self.size = size
-        self.width = 0
+        self.dimension = Size(0, 0)
 
         self.list_base = gl.glGenLists(SUPPORTED_CHARACTERS)
 
@@ -22,7 +23,9 @@ class Font:
         for i in range(SUPPORTED_CHARACTERS):
             self.face.load_char(chr(i), freetype.FT_LOAD_RENDER | freetype.FT_LOAD_FORCE_AUTOHINT)
             bitmap = self.face.glyph.bitmap
-            self.width = max(self.width, (bitmap.width * 1.25) / cx.width)
+
+            self.dimension.width = max(self.dimension.width, (bitmap.width * 1.25) / cx.width)
+            self.dimension.height = max(self.dimension.height, (bitmap.rows * 1.25) / cx.height)
 
             # Generate a texture for the character
             texture = gl.glGenTextures(1)
@@ -62,5 +65,5 @@ class Font:
         gl.glTranslatef(x, y, 0)
         for c in text:
             gl.glCallList(self.list_base + ord(c))
-            gl.glTranslatef(self.width, 0, 0)
+            gl.glTranslatef(self.dimension.width, 0, 0)
         gl.glPopMatrix()

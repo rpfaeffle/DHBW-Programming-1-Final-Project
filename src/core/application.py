@@ -13,7 +13,7 @@ class Application(object):
     def __init__(self, setup=None, screen_size=None, title=None):
         # Set default variables
         if screen_size is None:
-            screen_size = [520, 520]
+            screen_size = [510, 510]
         if title is None:
             title = format(b"Python OpenGL application")
         self.screen_size = screen_size

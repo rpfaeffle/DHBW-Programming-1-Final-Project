@@ -4,14 +4,16 @@ from core.openGLUtils import OpenGLUtils
 from constants import BLOCK_SIZE
 
 class Block(Component):
-  def __init__(self, color, x, y):
+  def __init__(self, color, x, y, width = BLOCK_SIZE, height = BLOCK_SIZE):
     super().__init__()
     self.color = color
     self.x = x
     self.y = y
+    self.width = width
+    self.height = height
 
   def render(self, cx):
-    x, y = OpenGLUtils.convert_to_normalized_coordinates(self.x * BLOCK_SIZE, self.y * BLOCK_SIZE, cx.width, cx.height)
+    x, y = OpenGLUtils.convert_to_normalized_coordinates(self.x * self.width, self.y * self.height, cx.width, cx.height)
     width, height = OpenGLUtils.convert_to_normalized_size(BLOCK_SIZE, BLOCK_SIZE, cx.width, cx.height)
 
     gl.glPushMatrix()

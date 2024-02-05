@@ -38,7 +38,7 @@ class Application(object):
         glut.glutCreateWindow(title)
 
         # Initialize the font after the window has been initialized
-        self.cx.font = Font("assets/fonts/SpaceMono-Regular.ttf", 12, self.cx)
+        self.cx.font = Font("assets/fonts/SpaceMono-Regular.ttf", 10, self.cx)
 
     def initialize(self):
         self.start_time = datetime.now()
@@ -75,8 +75,8 @@ class Application(object):
                 # otherwise append the component
                 components.extend(result if isinstance(result, list) else [result])
 
-        gl.glColor3f(0, 0, 0)
-        self.cx.font.draw(f"FPS: {self.frame_rate:.2f}", -0.99, .9)
+        gl.glColor3f(1, 1, 1)
+        self.cx.font.draw(f"FPS: {self.frame_rate:.2f}", -0.9, .9)
 
         # Flush the buffer
         gl.glFlush()

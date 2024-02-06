@@ -1,4 +1,3 @@
-import functools
 from core.component import Component
 from core.openGLUtils import OpenGLUtils
 

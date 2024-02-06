@@ -5,12 +5,13 @@ from components.text import Text
 from core.application import Application
 from core.component import Render
 import random
+import math
 
 from components.block import Block
 from components.line import Line
 from components.score import Score
 from components.shape import Shape, ShapeProps
-from constants import *
+import constants as const
 from utils import color, flatten
 
 class Tetris(Render):
@@ -19,39 +20,39 @@ class Tetris(Render):
         self.lines: list[Line] = []
         self.score = Score()
         self.falling_block: Optional[Shape] = None
-        self.falling_speed = GAME_SPEED
+        self.falling_speed = const.GAME_SPEED
         self.tetrises = 0
         self.game_over = False
 
-        self.columns = cx.width // BLOCK_SIZE
-        self.rows = TOTAL_ROWS
+        self.columns = cx.width // const.BLOCK_SIZE
+        self.rows = const.TOTAL_ROWS
 
         self.update_game_speed()
         self.initialize(cx)
 
     def update_game_speed(self):
         # Formula based on https://harddrop.com/wiki/Tetris_Worlds
-        self.falling_speed = int(GAME_SPEED * math.pow(0.8 - ((self.score.level - 1) * 0.007), self.score.level - 1))
+        self.falling_speed = int(const.GAME_SPEED * math.pow(0.8 - ((self.score.level - 1) * 0.007), self.score.level - 1))
 
     def setup_event_listeners(self, cx):
         """
         Setup event listeners for the game.
         """
-        cx.input.register(Keys.LEFT_ARROW.value, 0, lambda: self.move_block(Direction.LEFT))
-        cx.input.register(Keys.RIGHT_ARROW.value, 0, lambda: self.move_block(Direction.RIGHT))
-        cx.input.register(Keys.DOWN_ARROW.value, 0, lambda: self.update())
-        cx.input.register(Keys.SPACEBAR.value, 0, lambda: self.hard_drop())
-        cx.input.register(b'z', 0, lambda: self.falling_block.rotate_shape(RotationAngles.CLOCKWISE))
-        cx.input.register(b'c', 0, lambda: self.falling_block.rotate_shape(RotationAngles.COUNTER_CLOCKWISE))
+        cx.input.register(const.Keys.LEFT_ARROW.value, 0, lambda: self.move_block(const.Direction.LEFT))
+        cx.input.register(const.Keys.RIGHT_ARROW.value, 0, lambda: self.move_block(const.Direction.RIGHT))
+        cx.input.register(const.Keys.DOWN_ARROW.value, 0, lambda: self.update())
+        cx.input.register(const.Keys.SPACEBAR.value, 0, lambda: self.hard_drop())
+        cx.input.register(b'z', 0, lambda: self.falling_block.rotate_shape(const.RotationAngles.CLOCKWISE))
+        cx.input.register(b'c', 0, lambda: self.falling_block.rotate_shape(const.RotationAngles.COUNTER_CLOCKWISE))
         cx.input.register(b'r', 0, lambda: self.reset_game())
 
     def initialize(self, cx):
         self.setup_event_listeners(cx)
         self.blocks = [[None for _ in range(self.columns)] for _ in range(self.rows)]
         self.lines = [
-          Line((0, i * BLOCK_SIZE), (cx.width, i * BLOCK_SIZE)) for i in range(self.rows)
+          Line((0, i * const.BLOCK_SIZE), (cx.width, i * const.BLOCK_SIZE)) for i in range(self.rows)
         ] + [
-          Line((i * BLOCK_SIZE, 0), (i * BLOCK_SIZE, cx.height)) for i in range(self.columns)
+          Line((i * const.BLOCK_SIZE, 0), (i * const.BLOCK_SIZE, cx.height)) for i in range(self.columns)
         ]
         self.spawn_new_block()
 
@@ -72,16 +73,16 @@ class Tetris(Render):
         return blocks + falling_blocks + self.lines + [self.score]
 
     def spawn_new_block(self):
-        block_type = random.choice(SHAPE_IDS)
-        spawn_position = (self.columns // 2, VISIBLE_ROWS + 1)
+        block_type = random.choice(const.SHAPE_IDS)
+        spawn_position = (self.columns // 2, const.VISIBLE_ROWS + 1)
 
         self.falling_block = Shape(ShapeProps(
-          color=COLORS[block_type],
-          shape=POSITIONS[block_type],
-          origin=ROTATION_ORIGINS[block_type],
+          color=const.COLORS[block_type],
+          shape=const.POSITIONS[block_type],
+          origin=const.ROTATION_ORIGINS[block_type],
         ), spawn_position, self.is_position_vacant)
 
-    def move_block(self, direction: Direction):
+    def move_block(self, direction: const.Direction):
       """
       Move the falling block in the given direction if the position is vacant.
       """
@@ -142,7 +143,7 @@ class Tetris(Render):
             self.update_game_speed()
 
     def check_game_over(self):
-        return not all(block is None for block in self.blocks[VISIBLE_ROWS])
+        return not all(block is None for block in self.blocks[const.VISIBLE_ROWS])
 
     def move_all_blocks_down(self, row):
       for i in range(row, self.rows):

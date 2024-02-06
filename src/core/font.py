@@ -39,20 +39,19 @@ class Font:
             height = self.face.glyph.metrics.height / 64 / cx.height
             bearing_x = self.face.glyph.metrics.horiBearingX / 64 / cx.width
             bearing_y = (self.face.glyph.metrics.horiBearingY - self.face.glyph.metrics.height) / 64 / cx.height
-            advance = self.face.glyph.metrics.horiAdvance / 64 / cx.width
-
-            # Calculate the texture coordinates
-            tex_coord_x = bitmap.width / cx.width
-            tex_coord_y = bitmap.rows / cx.height
 
             # Create a display list for the character
             gl.glNewList(self.list_base + i, gl.GL_COMPILE)
             gl.glBindTexture(gl.GL_TEXTURE_2D, texture)
             gl.glBegin(gl.GL_QUADS)
-            gl.glTexCoord2f(0, 1); gl.glVertex2f(bearing_x, bearing_y)
-            gl.glTexCoord2f(1, 1); gl.glVertex2f(bearing_x + width, bearing_y)
-            gl.glTexCoord2f(1, 0); gl.glVertex2f(bearing_x + width, bearing_y + height)
-            gl.glTexCoord2f(0, 0); gl.glVertex2f(bearing_x, bearing_y + height)
+            gl.glTexCoord2f(0, 1)
+            gl.glVertex2f(bearing_x, bearing_y)
+            gl.glTexCoord2f(1, 1)
+            gl.glVertex2f(bearing_x + width, bearing_y)
+            gl.glTexCoord2f(1, 0)
+            gl.glVertex2f(bearing_x + width, bearing_y + height)
+            gl.glTexCoord2f(0, 0)
+            gl.glVertex2f(bearing_x, bearing_y + height)
             gl.glEnd()
             gl.glBindTexture(gl.GL_TEXTURE_2D, 0)
             gl.glEndList()

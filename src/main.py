@@ -7,6 +7,7 @@ import random
 
 from components.block import Block
 from components.line import Line
+from components.score import Score
 from components.shape import Shape, ShapeProps
 from constants import *
 from utils import flatten
@@ -15,10 +16,9 @@ class Tetris(Render):
     def __init__(self, cx):
         self.blocks: list[list[Optional[Block]]] = []
         self.lines: list[Line] = []
+        self.score = Score()
         self.falling_block: Optional[Shape] = None
         self.falling_speed = GAME_SPEED
-        self.score = 0
-        self.level = 1
         self.tetrises = 0
         self.game_over = False
 
@@ -30,7 +30,7 @@ class Tetris(Render):
 
     def update_game_speed(self):
         # Formula based on https://harddrop.com/wiki/Tetris_Worlds
-        self.falling_speed = int(GAME_SPEED * math.pow(0.8 - ((self.level - 1) * 0.007), self.level - 1))
+        self.falling_speed = int(GAME_SPEED * math.pow(0.8 - ((self.score.level - 1) * 0.007), self.score.level - 1))
 
     def setup_event_listeners(self, cx):
         """
@@ -52,6 +52,7 @@ class Tetris(Render):
         ]
         self.spawn_new_block()
 
+
     def render(self, cx):
         gl.glClearColor(0.9, 0.9, 0.9, 1.0)  # Set the background color to gray
 
@@ -61,7 +62,7 @@ class Tetris(Render):
         blocks = flatten(self.blocks)
         falling_blocks = self.falling_block.blocks if self.falling_block else []
 
-        return blocks + falling_blocks + self.lines
+        return blocks + falling_blocks + self.lines + [self.score]
 
     def spawn_new_block(self):
         block_type = random.choice(SHAPE_IDS)
@@ -112,22 +113,19 @@ class Tetris(Render):
     def update_score(self, rows):
         self.tetrises += rows
         if rows == 1:
-            self.score += 40
+            self.score.score += 40
         elif rows == 2:
-            self.score += 100
+            self.score.score += 100
         elif rows == 3:
-            self.score += 300
+            self.score.score += 300
         elif rows == 4:
-            self.score += 1200
+            self.score.score += 1200
 
         # Advance level if tetrises is greater than or equal to the current level * 10 + 10
-        if self.tetrises >= self.level * 10 + 10:
+        if self.tetrises >= self.score.level * 10 + 10:
             self.tetrises = 0
-            self.level += 1
+            self.score.level += 1
             self.update_game_speed()
-            print(f"Reached Level: {self.level}")
-
-        print(f"Score: {self.score}")
 
     def check_game_over(self):
         return not all(block is None for block in self.blocks[VISIBLE_ROWS])
@@ -169,4 +167,4 @@ class Tetris(Render):
         return Tetris(cx)
 
 if __name__ == '__main__':
-  Application(None, [200, 400]).run(lambda cx: Tetris.new(cx))
+  Application(None, [200, 500]).run(lambda cx: Tetris.new(cx))

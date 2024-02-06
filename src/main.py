@@ -39,6 +39,7 @@ class Tetris(Render):
         cx.input.register(Keys.LEFT_ARROW.value, 0, lambda: self.move_block(Direction.LEFT))
         cx.input.register(Keys.RIGHT_ARROW.value, 0, lambda: self.move_block(Direction.RIGHT))
         cx.input.register(Keys.DOWN_ARROW.value, 0, lambda: self.update())
+        cx.input.register(Keys.SPACEBAR.value, 0, lambda: self.hard_drop())
         cx.input.register(b'z', 0, lambda: self.falling_block.rotate_shape(RotationAngles.CLOCKWISE))
         cx.input.register(b'c', 0, lambda: self.falling_block.rotate_shape(RotationAngles.COUNTER_CLOCKWISE))
 
@@ -83,6 +84,15 @@ class Tetris(Render):
           return
 
       self.falling_block.move_horizontally(direction)
+
+    def hard_drop(self):
+      """
+      Move the falling block to the lowest possible position.
+      """
+      print("Hard Drop")
+      while not self.check_collision():
+        self.falling_block.fall()
+      self.update()
 
     def update(self):
       if self.check_collision():

@@ -25,5 +25,6 @@ python3 src/main.py
 | Left Arrow  | Move piece left                |
 | Right Arrow | Move piece right               |
 | Down Arrow  | Move piece down                |
+| Spacebar    | Hard Drop piece                |
 | Z           | Rotate piece counter-clockwise |
 | C           | Rotate piece clockwise         |

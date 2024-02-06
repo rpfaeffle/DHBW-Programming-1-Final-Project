@@ -48,6 +48,7 @@ class Keys(Enum):
   LEFT_ARROW = 100
   RIGHT_ARROW = 102
   DOWN_ARROW = 103
+  SPACEBAR = b' '
 
 class RotationAngles(Enum):
   CLOCKWISE = math.pi / 2

@@ -1,6 +1,7 @@
 from typing import Optional
 
 import OpenGL.GL as gl
+from components.text import Text
 from core.application import Application
 from core.component import Render
 import random
@@ -10,7 +11,7 @@ from components.line import Line
 from components.score import Score
 from components.shape import Shape, ShapeProps
 from constants import *
-from utils import flatten
+from utils import color, flatten
 
 class Tetris(Render):
     def __init__(self, cx):
@@ -42,6 +43,7 @@ class Tetris(Render):
         cx.input.register(Keys.SPACEBAR.value, 0, lambda: self.hard_drop())
         cx.input.register(b'z', 0, lambda: self.falling_block.rotate_shape(RotationAngles.CLOCKWISE))
         cx.input.register(b'c', 0, lambda: self.falling_block.rotate_shape(RotationAngles.COUNTER_CLOCKWISE))
+        cx.input.register(b'r', 0, lambda: self.reset_game())
 
     def initialize(self, cx):
         self.setup_event_listeners(cx)
@@ -55,7 +57,11 @@ class Tetris(Render):
 
 
     def render(self, cx):
-        gl.glClearColor(0.9, 0.9, 0.9, 1.0)  # Set the background color to gray
+        if self.game_over:
+          gl.glClearColor(*color(0, 0, 0))
+          return Text("Game Over", cx.width // 2, cx.height // 2, center=True)
+
+        gl.glClearColor(*color(230, 230, 230))
 
         if cx.frame % self.falling_speed == 0 and not self.game_over:
           self.update()
@@ -89,7 +95,6 @@ class Tetris(Render):
       """
       Move the falling block to the lowest possible position.
       """
-      print("Hard Drop")
       while not self.check_collision():
         self.falling_block.fall()
       self.update()
@@ -100,7 +105,6 @@ class Tetris(Render):
 
         if self.check_game_over():
           self.game_over = True
-          print("Game Over")
           return
 
         self.remove_full_rows()
@@ -171,6 +175,14 @@ class Tetris(Render):
           return True
         return self.blocks[position[1]][position[0]] is None
       return False
+
+    def reset_game(self):
+        if self.game_over:
+          self.blocks = [[None for _ in range(self.columns)] for _ in range(self.rows)]
+          self.score = Score()
+          self.tetrises = 0
+          self.game_over = False
+          self.spawn_new_block()
 
     @staticmethod
     def new(cx):

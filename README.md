@@ -28,3 +28,4 @@ python3 src/main.py
 | Spacebar    | Hard Drop piece                |
 | Z           | Rotate piece counter-clockwise |
 | C           | Rotate piece clockwise         |
+| R           | Restart game                   |

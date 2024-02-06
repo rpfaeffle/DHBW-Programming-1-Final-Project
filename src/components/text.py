@@ -4,10 +4,11 @@ from core.openGLUtils import OpenGLUtils
 
 
 class Text(Component):
-    def __init__(self, text: str, x: int, y: int):
+    def __init__(self, text: str, x: int, y: int, center: bool = False):
         super().__init__()
         self.text = text
         self.x, self.y = x, y
+        self.center = center
 
     def render(self, cx):
         lines = self.text.split('\n')
@@ -15,4 +16,6 @@ class Text(Component):
 
         for i in range(len(lines)):
           line = lines[i]
+          if self.center:
+            x -= (len(line) * cx.font.dimension.width) / 2
           cx.font.draw(line, x, y - i * cx.font.dimension.height)

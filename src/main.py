@@ -16,7 +16,9 @@ class Tetris(Render):
     def __init__(self, cx):
         self.blocks: list[list[Optional[Block]]] = []
         self.lines: list[Line] = []
-        self.score = Score(1, 0)
+        self.start_score = 0
+        self.start_level = 1
+        self.score = Score(self.start_level, self.start_score)
         self.falling_block: Optional[Shape] = None
         self.falling_speed = GAME_SPEED
         self.tetrises = 0
@@ -126,7 +128,6 @@ class Tetris(Render):
             self.tetrises = 0
             self.score.level += 1
             self.update_game_speed()
-            print(f"Reached Level: {self.score.level}")
 
     def check_game_over(self):
         return not all(block is None for block in self.blocks[VISIBLE_ROWS])

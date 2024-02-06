@@ -45,6 +45,7 @@ class Direction(Enum):
   RIGHT = 1
 
 class Keys(Enum):
+  ESC = b'\x1b'
   LEFT_ARROW = 100
   RIGHT_ARROW = 102
   DOWN_ARROW = 103

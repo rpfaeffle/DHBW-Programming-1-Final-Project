@@ -15,6 +15,7 @@ class Text(Component):
 
         for i in range(len(lines)):
           line = lines[i]
+          current_x = x
           if self.center:
-            x -= (len(line) * cx.font.dimension.width) / 2
-          cx.font.draw(line, x, y - i * cx.font.dimension.height)
+            current_x -= (len(line) * cx.font.dimension.width) / 2
+          cx.font.draw(line, current_x, y - i * cx.font.dimension.height)

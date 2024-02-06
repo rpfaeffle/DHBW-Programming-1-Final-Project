@@ -23,6 +23,7 @@ class Tetris(Render):
         self.falling_speed = const.GAME_SPEED
         self.tetrises = 0
         self.game_over = False
+        self.paused = False
 
         self.columns = cx.width // const.BLOCK_SIZE
         self.rows = const.TOTAL_ROWS
@@ -44,7 +45,8 @@ class Tetris(Render):
         cx.input.register(const.Keys.SPACEBAR.value, 0, lambda: self.hard_drop())
         cx.input.register(b'z', 0, lambda: self.falling_block.rotate_shape(const.RotationAngles.CLOCKWISE))
         cx.input.register(b'c', 0, lambda: self.falling_block.rotate_shape(const.RotationAngles.COUNTER_CLOCKWISE))
-        cx.input.register(b'r', 0, lambda: self.reset_game())
+        cx.input.register(b'r', 0, lambda: self.reset_game() if not self.paused else self.resume_game())
+        cx.input.register(const.Keys.ESC.value, 0, lambda: self.pause_game())
 
     def initialize(self, cx):
         self.setup_event_listeners(cx)
@@ -61,6 +63,10 @@ class Tetris(Render):
         if self.game_over:
           gl.glClearColor(*color(0, 0, 0))
           return Text("Game Over", cx.width // 2, cx.height // 2, center=True)
+
+        if self.paused:
+          gl.glClearColor(*color(0, 0, 0))
+          return Text("Pause\n\nCmd + Q\nto close\n\nr to continue", cx.width // 2, cx.height // 2, center=True)
 
         gl.glClearColor(*color(230, 230, 230))
 
@@ -184,6 +190,12 @@ class Tetris(Render):
           self.tetrises = 0
           self.game_over = False
           self.spawn_new_block()
+
+    def pause_game(self):
+        self.paused = True
+
+    def resume_game(self):
+        self.paused = False
 
     @staticmethod
     def new(cx):

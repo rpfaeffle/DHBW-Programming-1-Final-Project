@@ -26,6 +26,7 @@ python3 src/main.py
 | Right Arrow | Move piece right               |
 | Down Arrow  | Move piece down                |
 | Spacebar    | Hard Drop piece                |
+| Escape      | Pause game                     |
 | Z           | Rotate piece counter-clockwise |
 | C           | Rotate piece clockwise         |
-| R           | Restart game                   |
+| R           | Restart / Resum game           |

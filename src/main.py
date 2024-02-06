@@ -16,9 +16,7 @@ class Tetris(Render):
     def __init__(self, cx):
         self.blocks: list[list[Optional[Block]]] = []
         self.lines: list[Line] = []
-        self.start_score = 0
-        self.start_level = 1
-        self.score = Score(self.start_level, self.start_score)
+        self.score = Score()
         self.falling_block: Optional[Shape] = None
         self.falling_speed = GAME_SPEED
         self.tetrises = 0

@@ -1,16 +1,13 @@
 import OpenGL.GL as gl
 from core.component import Component
 from components.text import Text
-from components.block import Block
 
 
 class Score(Component):
-
-    def __init__(self, level: int, score: int):
+    def __init__(self, level: int = 1, score: int = 0):
         super().__init__()
         self.level = level
         self.score = score
-        self.background = Block((0, 0, 0), 0, 0, 240, 100)
 
     def render(self, cx):
         gl.glPushMatrix()
@@ -25,4 +22,4 @@ class Score(Component):
         gl.glPopMatrix()
 
         gl.glColor4f(1, 1, 1, 1)
-        return [Text(f"Score: {self.score}\nLevel: {self.level}", 10, 450)]
+        return Text(f"Score: {self.score}\nLevel: {self.level}", 10, 450)

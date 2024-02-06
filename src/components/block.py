@@ -14,7 +14,7 @@ class Block(Component):
 
   def render(self, cx):
     x, y = OpenGLUtils.convert_to_normalized_coordinates(self.x * self.width, self.y * self.height, cx.width, cx.height)
-    width, height = OpenGLUtils.convert_to_normalized_size(BLOCK_SIZE, BLOCK_SIZE, cx.width, cx.height)
+    width, height = OpenGLUtils.convert_to_normalized_size(self.width, self.height, cx.width, cx.height)
 
     gl.glPushMatrix()
     gl.glTranslatef(x, y, 0)  # Position the rectangle

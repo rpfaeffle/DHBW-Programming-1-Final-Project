@@ -33,7 +33,7 @@ class Tetris(Render):
 
     def update_game_speed(self):
         # Formula based on https://harddrop.com/wiki/Tetris_Worlds
-        self.falling_speed = int(const.GAME_SPEED * math.pow(0.8 - ((self.score.level - 1) * 0.007), self.score.level - 1))
+        self.falling_speed = max(int(const.GAME_SPEED * math.pow(0.8 - ((self.score.level - 1) * 0.007), self.score.level - 1)), 1)
 
     def setup_event_listeners(self, cx):
         """

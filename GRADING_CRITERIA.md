@@ -98,6 +98,9 @@ Beispielhafte Screenshots von genutzten Tools (@rpfaeffle):
 <img src="assets/images/git-terminal-rpfaeffle.png" alt="Image showing usage of git and the terminal" height="250px" />
 <img src="assets/images/vscode-rpfaeffle.png" alt="Image showing usage of vscode and github copilot" height="250px">
 
+Screenshots zur Nutzung eines Code Editors (@tim-02-k):
+<img src="assets/images/PyCharm-tim-02-k.png" alt="Image showing usage of PyCharm by JetBrains" height="250px">
+
 ## PERSONALE UND SOZIALE KOMPETENZ (20 Punkte)
 
 ### Die Studierenden können ihre Software erläutern und begründen. (5)

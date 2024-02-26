@@ -23,3 +23,15 @@ Refernce Commit ID: [b2069b222897f848422aeefe3be303fcd791e6bd](https://github.co
 - Durchdachtes Projektmanagement
 - Tolles README.md (Lisp is great) 🤣
 - Verwendung von verschieden Operatoren, Kontrollstrukturen, Funktionen, Strukturen, ...
+
+## Grading Criteria für die Gruppe
+
+### Fachkompetenz (siehe [Grading Criteria](https://github.com/CakeOfPain/Dashbuddy/blob/main/grading-criteria.md) für Details)
+
+- [x] Verwendung von verschiedenen Datentypen
+- [x] E-/A-Operationen und Dateiverarbeitung
+- [x] Operatoren
+- [x] Kontrollstrukturen
+- [x] Funktionen
+- [x] Stringverarbeitung
+- [x] Strukturierte Datentypen
